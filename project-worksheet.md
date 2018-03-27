@@ -17,11 +17,17 @@ This schedule will be used to keep track of your progress throughout the week an
 
 ## Project Description
 
-Use this section to describe your final project and perhaps any links to relevant sites that help convey the concept and\or functionality.
+Use this section to describe your final project and perhaps any links to relevant sites that help 
+convey the concept and\or functionality.
+
+-My game called Battle Shot is a shooting game against an Ai opponent
 
 ## Wireframes
 
 Include images of your wireframes. 
+
+- Landing page:  https://wireframe.cc/SsaHue
+- Game page:   https://wireframe.cc/h3jheU
 
 ## Priority Matrix
 
@@ -31,6 +37,10 @@ Include a full list of features that have been prioritized based on the `Time an
 
 ### Landing Page
 What will a player see when they start your game?
+
+- The title of the game
+- A form to collect the player's name
+- A start button to start the game
 
 ### Game Initialization
 What will a player see when the game is started? 
