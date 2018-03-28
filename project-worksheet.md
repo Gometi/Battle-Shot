@@ -35,6 +35,18 @@ Include a full list of features that have been prioritized based on the `Time an
 
 ## Game Components
 
+- A Welcome screen with a form that collects the user's name
+- The game screen where the battle occurs
+- The game screen will have a start and a restart button
+- The User will control the ship's movement using the arrow keys and shoot using the spacebar
+- The Ai ships will be able to shoot at the user's ship and also move around the screen
+- The game screen will show the damage the User's ship has taken by displaying the ship's damage
+  condition like 'good', 'critical' etc
+- There will be a visual notification when any of the ships take damage
+- The game screen will be have a timer that records how long it takes to complete the game
+- There will be a game over screen that displays the User's name and the time it took to complete the
+  game. And if the user won or lost.
+
 ### Landing Page
 What will a player see when they start your game?
 
@@ -45,7 +57,7 @@ What will a player see when they start your game?
 ### Game Initialization
 What will a player see when the game is started? 
 
-- The player will see a battleShip on the screen, a help button to show the controls and a button to start the    game 
+- The player will see a BattleShip on the screen, a help button to show the controls and a button to start the    game 
 
 ### Playing The Game
 What will be the flow of the game, what will the user be expeted to do and what will the user expect from the gam
