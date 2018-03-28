@@ -45,16 +45,22 @@ What will a player see when they start your game?
 ### Game Initialization
 What will a player see when the game is started? 
 
-- The player will see a battleShip on the screen,a help button to show the controls and a button to start the    game start the game
+- The player will see a battleShip on the screen, a help button to show the controls and a button to start the    game 
 
 ### Playing The Game
 What will be the flow of the game, what will the user be expeted to do and what will the user expect from the gam
 
+- The User will be fighting against other ships by shooting at them while also avoiding the shots from the         other ships. The user will have to destroy the other ships before his own ship is destroyed
+
 ### Winning The Game
 What does it look like when the game ends, what determines winning or losing?
 
+- The game ends when all the Ai ships are destroyed (You Win), or when the user's ship is destroyed (You Lose) 
+
 ### Game Reset
 How will the user restart the game once it has been completed.
+
+- There will be a restart button
 
 ## MVP 
 
