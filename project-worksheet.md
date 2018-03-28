@@ -20,7 +20,7 @@ This schedule will be used to keep track of your progress throughout the week an
 Use this section to describe your final project and perhaps any links to relevant sites that help 
 convey the concept and\or functionality.
 
--My game called Battle Shot is a shooting game against an Ai opponent or opponents using Battleships
+- My game called Battle Shot is a shooting game against an Ai opponent or opponents using Battleships
 
 ## Wireframes
 
@@ -45,7 +45,7 @@ What will a player see when they start your game?
 ### Game Initialization
 What will a player see when the game is started? 
 
-- The player will see a battleShip on the screen,a help button to show the controls and a button to start the game start the game
+- The player will see a battleShip on the screen,a help button to show the controls and a button to start the    game start the game
 
 ### Playing The Game
 What will be the flow of the game, what will the user be expeted to do and what will the user expect from the gam
