@@ -77,10 +77,26 @@ How will the user restart the game once it has been completed.
 ## MVP 
 
 Include the full list of features that will be part of your MVP 
+- getting the ships to move using the arrow keys
+- getting the ships to shoot bullets
+- collision detection between the ships and the bullets
+- if the bullets hit a ship, execute a function that gives a visual notification that a ship has been hit
+- if an Ai ship is hit, it should disappear from the screen
 
 ## POST MVP
 
 Include the full list of features that you are considering for POST MVP
+
+- creating a class that defines a battleship object
+- call a function that creates battleships using a class
+- adding a damage indicator for the user's ship
+- making the user's ship take more than one hit before it can be destroyed (and the Ai ships)
+- there should be a condition that the user wins when all the Ai ships are destroyed, and the user loses
+  when his ship is destroyed
+- there should be a game over screen when the user wins or loses
+- there should be a timer at the top that records the time it takes to complete the game
+- the game over screen should show the user's name, if he wins or loses and the time it took to complete the     game
+- there should be a restart button that restarts the game
 ## Functional Components
 
 Based on the initial logic defined in the previous game phases section try and breakdown the logic further into functional components, and by that we mean functions.  Does your logic indicate that code could be encapsulated for the purpose of reusablility.  Once a function has been defined it can then be incorporated into a class as a method. 
@@ -89,8 +105,14 @@ Time frames are also key in the development cycle.  You have limited time to cod
 
 | Component | Priority | Estimated Time | Time Invetsted | Actual Time |
 | --- | :---: |  :---: | :---: | :---: |
-| Component 1 | H | 10hrs| 12hrs | 12hrs |
-| Total |  | 10hrs| 12hrs | 12hrs |
+| Game Screen Creation | H | 4hrs|  |  |
+| Moving the ships | H | 6hrs|  |  |
+| Collision detection | H | 8hrs|  |  |
+| Damage indicator | L | 8hrs|  |  |
+| Game over screen | L | 8hrs|  |  |
+| Timer | L | 3hrs|  |  |
+| Restart | L | 2hrs|  |  |
+| Total |  | 39hrs|  |  |
 
 ## Helper Functions
 Helper functions should be generic enought that they can be reused in other applications. Use this section to document all helper functions that fall into this category.
