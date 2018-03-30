@@ -26,13 +26,17 @@
     background: red;
     border-radius: 50px;
 }
+.damage{
+    opacity: .5;
+}
 .bullet{
     position: absolute;
     width: 10px;
     height: 10px;
     background: blue;
     border-radius: 50px;
-    transition: 3s linear;
+    transition: 2s linear;
+    z-index: -2;
 }
 .player-bullet{
     position: absolute;
@@ -40,4 +44,11 @@
     height: 10px;
     background: rgb(60, 255, 0);
     border-radius: 50px;
+    z-index: -2;
+
+}
+.start_button{
+    position: absolute;
+    left: 300px;
+    top: 600px;
 }
