@@ -1,9 +1,12 @@
+body{
+    margin: 0;
+}
 .welcomePage{
     position: absolute;
     height: 100%;
     width: 100%;
     background: rgba(0, 0, 0,0.95);
-    z-index: 2;
+    z-index: 5;
 }
 .welcomePage div{
     position: relative;
@@ -38,6 +41,7 @@
     width: 800px;
     height: 500px;
     border: 2px solid black;
+    background-color: black;
     border-radius: 20px;
 }
 .player{
@@ -48,6 +52,23 @@
     bottom: 10px;
     left: 369px;
     transition: .2s linear;
+    background-image: url('player1.png');
+    background-size: cover;
+    z-index: 3;
+}
+.explosion{
+    background-image: url('explosion.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.ai_explosion{
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-image: url('explosion.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 3;
 }
 .ai{
     position: absolute;
@@ -55,9 +76,12 @@
     height: 50px;
     background: red;
     border-radius: 50px;
+    background-image: url('aiShip.gif');
+    background-size: cover;
+    z-index: 3;
 }
 .damage{
-    opacity: .5;
+    opacity: .3;
 }
 .bullet{
     position: absolute;
@@ -66,7 +90,7 @@
     background: blue;
     border-radius: 50px;
     transition: 2s linear;
-    z-index: -2;
+    z-index: 2;
 }
 .player-bullet{
     position: absolute;
@@ -74,7 +98,7 @@
     height: 10px;
     background: rgb(60, 255, 0);
     border-radius: 50px;
-    z-index: -2;
+    z-index: 2;
 
 }
 .start_button{
@@ -117,7 +141,7 @@
     height: 100%;
     width: 100%;
     background: rgba(0, 0, 0,0.95);
-    z-index: 3;
+    z-index: 6;
 }
 .score{
     position: absolute;

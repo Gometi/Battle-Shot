@@ -6,6 +6,7 @@ $(document).ready(function () {
   let time;
   let timer;
   let ship1;
+  let ship2;
   $('.begin').click(() => {
     if (!playerName.val()) alert('Enter Your Name to Begin!')
     else $('.welcomePage').css('display', 'none');
@@ -45,15 +46,18 @@ $(document).ready(function () {
       constructor(leftPosition, topPosition) {
         this.leftPosition = leftPosition;
         this.topPosition = topPosition;
-        let aiShip = $('<div></div>');
+        let aiShip = $("<div></div>");
+        
         aiShip.addClass('ai');
         this.aiShip = aiShip;
         let bullet = $('<div></div>');
         bullet.addClass('bullet');
         this.bullet = bullet;
-        this.damage_ship_can_take = 3;
+        this.damage_ship_can_take = 4;
         this.is_ship_destroyed = false;
         this.executing;
+        this.moving_top_down;
+        this.moving_right_left;
       }
       getTopPosition() {
         return this.topPosition;
@@ -72,9 +76,20 @@ $(document).ready(function () {
         setBulletPosition('bullet', 'top', `${this.topPosition + 50}px`)
       }
       move() {
-        let moveRight;
         let moving_right = true;
-        moveRight = setInterval(() => {
+        let moving_down = true;
+        this.moving_top_down = setInterval(()=>{
+          if(moving_down){
+            setAiPosition('top', `${this.topPosition++}px`);
+            if (this.topPosition === 200) moving_down = false;
+          }
+          else{
+            setAiPosition('top', `${this.topPosition--}px`);
+            if (this.topPosition === 0) moving_down = true;
+          }
+          
+        }, 50);
+        this.moving_right_left = setInterval(() => {
           if (moving_right) {
             setAiPosition('left', `${this.leftPosition++}px`);
             if (this.leftPosition === 750) moving_right = false;
@@ -94,7 +109,11 @@ $(document).ready(function () {
           setTimeout(() => {
             if (getBulletPosition('top') >= `${playerPosition.top}px` && getBulletPosition('top') <= `${playerPosition.top + 50}px` && getBulletPosition('left') >= `${playerPosition.left}px` && getBulletPosition('left') <= `${playerPosition.left + 50}px`) {
               this.bullet.remove();
-              $('.player').remove();
+              $('.player').addClass('explosion');
+              setTimeout(() => {
+                $('.player').remove();
+              }, 2000);
+              
               player_ship_destroyed = true;
             }
 
@@ -106,22 +125,33 @@ $(document).ready(function () {
       }
       executeInstructions() {
         this.executing = setInterval(() => {
-          firstShip.createAmmo();
-          firstShip.shoot();
+          this.createAmmo();
+          this.shoot();
         }, 2500);
         this.move();
       }
 
       destroyShip() {
         this.damage_ship_can_take--;
-        this.aiShip.addClass('damage');
-        setTimeout(() => {
-          this.aiShip.removeClass('damage');
-        }, 100);
+        if(!this.is_ship_destroyed){
+          this.aiShip.addClass('damage');
+          setTimeout(() => {
+            this.aiShip.removeClass('damage');
+          }, 100);
+        }
+        
         if (this.damage_ship_can_take === 0) {
-          this.aiShip.remove();
-          this.bullet.remove();
+          this.aiShip.removeClass('ai');
+          this.aiShip.addClass('ai_explosion');
+          // this.aiShip.css('background-image', "url('explosion.gif')");
+          clearInterval(this.moving_top_down);
+          clearInterval(this.moving_right_left);
           clearInterval(this.executing);
+          setTimeout(() => {
+            this.aiShip.remove();
+            this.bullet.remove();
+          }, 2000);
+          
           this.is_ship_destroyed = true;
           number_of_ships_destroyed++;
         }
@@ -132,10 +162,11 @@ $(document).ready(function () {
     firstShip.createShip();
     firstShip.executeInstructions();
     ship1 = firstShip.executing;
-
+    
+    
     let winOrLoss = setInterval(() => {
       if (firstShip.is_ship_destroyed) {
-        win();
+         win();
         score_board();
         clearInterval(winOrLoss);
       }
@@ -158,7 +189,7 @@ $(document).ready(function () {
           let bullet = $('<div></div>');
           bullet.addClass('player-bullet');
           $('.game-screen').append(bullet);
-          bullet.css('left', `${playerPosition.left + 10}px`);
+          bullet.css('left', `${playerPosition.left + 19}px`);
           bullet.css('top', `${playerPosition.top - 20}px`);
           let bulletTopPosition = playerPosition.top - 20;
           let bulletLeftPosition = playerPosition.left + 10;
@@ -168,12 +199,10 @@ $(document).ready(function () {
               bullet.remove();
             }
             else if (firstShip.getTopPosition() === bulletTopPosition && bulletLeftPosition >= firstShip.getLeftPosition() && bulletLeftPosition <= firstShip.getLeftPosition() + 50) {
-              firstShip.destroyShip();
-              if (firstShip.damage_ship_can_take === 0) {
-                clearInterval(first_ship_shoots);
-              }
-              clearInterval(bulletMovement);
               bullet.remove();
+              firstShip.destroyShip();
+              clearInterval(bulletMovement);
+              
             }
             else
               bullet.css('top', `${bulletTopPosition--}px`);
@@ -201,7 +230,6 @@ $(document).ready(function () {
   }
   function score_board() {
     let score = $('.score h1');
-    debugger;
     score.eq(0).text(`${score.eq(0).text()}  ${playerName.val()}`);
     score.eq(1).text(`${score.eq(1).text()}  ${number_of_ships_destroyed}`);
     score.eq(2).text(`${score.eq(2).text()}  ${time}`);
