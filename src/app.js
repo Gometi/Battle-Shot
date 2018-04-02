@@ -1,7 +1,32 @@
 $(document).ready(function () {
-  $('.start_button').click(()=>{
+  let playerName = $('.playerName');
+  let number_of_ships_destroyed = 0;
+  let seconds = 0;
+  let minutes = 0;
+  let time;
+  let timer;
+  let ship1;
+  $('.begin').click(() => {
+    if (!playerName.val()) alert('Enter Your Name to Begin!')
+    else $('.welcomePage').css('display', 'none');
+  })
+  $('.start_button').click(() => {
+    timer = setInterval(() => {
+      seconds++;
+      if (seconds > 59) {
+        seconds = 0;
+        minutes++;
+      }
+      if (minutes > 59) {
+        minutes = 0;
+      }
+      time = `${minutes} minutes ${seconds} seconds`;
+      $('.timer').text(time);
+    }, 1000);
+
     let playerPosition = $('.player').offset();
     let player_ship_destroyed = false;
+
 
     let getAiPosition = (position) => {
       return $('.ai').offset();
@@ -27,6 +52,8 @@ $(document).ready(function () {
         bullet.addClass('bullet');
         this.bullet = bullet;
         this.damage_ship_can_take = 3;
+        this.is_ship_destroyed = false;
+        this.executing;
       }
       getTopPosition() {
         return this.topPosition;
@@ -77,6 +104,14 @@ $(document).ready(function () {
           }, 2050);
         }, 20);
       }
+      executeInstructions() {
+        this.executing = setInterval(() => {
+          firstShip.createAmmo();
+          firstShip.shoot();
+        }, 2500);
+        this.move();
+      }
+
       destroyShip() {
         this.damage_ship_can_take--;
         this.aiShip.addClass('damage');
@@ -86,19 +121,30 @@ $(document).ready(function () {
         if (this.damage_ship_can_take === 0) {
           this.aiShip.remove();
           this.bullet.remove();
+          clearInterval(this.executing);
+          this.is_ship_destroyed = true;
+          number_of_ships_destroyed++;
         }
       }
 
     }
     let firstShip = new ai_ship(300, 2);
     firstShip.createShip();
-    let first_ship_shoots = setInterval(() => {
+    firstShip.executeInstructions();
+    ship1 = firstShip.executing;
 
-      firstShip.createAmmo();
-      firstShip.shoot();
-    }, 2500);
-    firstShip.move();
-
+    let winOrLoss = setInterval(() => {
+      if (firstShip.is_ship_destroyed) {
+        win();
+        score_board();
+        clearInterval(winOrLoss);
+      }
+      if (player_ship_destroyed) {
+        game_over();
+        score_board();
+        clearInterval(winOrLoss);
+      }
+    })
 
     $('body').keydown(event => {
       if (!player_ship_destroyed) {
@@ -136,7 +182,32 @@ $(document).ready(function () {
       }
     })
   })
-  
 
- 
+  function win() {
+    clearInterval(timer);
+    clearInterval(ship1);
+    $('.win').css('opacity', '1');
+    setTimeout(() => {
+      $('.win').css('opacity', '0');
+    }, 4000);
+  }
+  function game_over() {
+    clearInterval(timer);
+    clearInterval(ship1);
+    $('.gameOver').css('opacity', '1');
+    setTimeout(() => {
+      $('.gameOver').css('opacity', '0');
+    }, 4000);
+  }
+  function score_board() {
+    let score = $('.score h1');
+    debugger;
+    score.eq(0).text(`${score.eq(0).text()}  ${playerName.val()}`);
+    score.eq(1).text(`${score.eq(1).text()}  ${number_of_ships_destroyed}`);
+    score.eq(2).text(`${score.eq(2).text()}  ${time}`);
+    setTimeout(() => {
+      $('.scoreBoard').css('display', 'block');
+    }, 6500);
+  }
+
 });
