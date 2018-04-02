@@ -5,7 +5,7 @@ body{
     position: absolute;
     height: 100%;
     width: 100%;
-    background: rgba(0, 0, 0,0.95);
+    background: rgba(0, 0, 0,0.98);
     z-index: 5;
 }
 .welcomePage div{
@@ -15,32 +15,43 @@ body{
 .welcomePage div h1{
     position: absolute;
     font-size: 80px;
-    left: 400px;
+    left: 500px;
 }
 .welcomePage div h2{
     position: absolute;
-    top: 277px;
-    left: 400px;
+    top: 262px;
+    left: 450px;
+    font-size: 40px;
 }
-.welcomePage div .playerName{
+.playerName{
     position: absolute;
     top: 300px;
-    left: 500px;
+    left: 600px;
+    width: 300px;
+    height: 30px;
+    font-size: 20px;
 }
-.welcomePage div .begin{
+.begin{
     position: absolute;
     top: 400px;
-    left: 550px;
+    left: 650px;
+    font-size: 50px;
+    border: 5px solid rgb(101, 101, 238);
+    color: white;
+    border-radius: 15px;
+    background: rgb(19, 4, 105);
 }
 .container{
     position: relative;
     height: 650px;
+    background: rgb(3, 3, 44);
+    color: white;
 }
 .game-screen{
     position: relative;
     width: 800px;
     height: 500px;
-    border: 2px solid black;
+    border: 3px solid rgb(252, 248, 248);
     background-color: black;
     border-radius: 20px;
 }
@@ -74,7 +85,6 @@ body{
     position: absolute;
     width: 50px;
     height: 50px;
-    background: red;
     border-radius: 50px;
     background-image: url('aiShip.gif');
     background-size: cover;
@@ -87,8 +97,9 @@ body{
     position: absolute;
     width: 10px;
     height: 10px;
-    background: blue;
     border-radius: 50px;
+    background-image: url('laser.jpg');
+    background-size: cover;
     transition: 2s linear;
     z-index: 2;
 }
@@ -97,35 +108,44 @@ body{
     width: 10px;
     height: 10px;
     background: rgb(60, 255, 0);
+    background-image: url('fireBullet.gif');
+    background-size: cover;
     border-radius: 50px;
     z-index: 2;
 
 }
 .start_button{
     position: absolute;
-    left: 300px;
-    top: 600px;
+    left: 380px;
+    top: 520px;
+    font-size: 30px;
+    border: 3px solid wheat;
+    color: wheat;
+    border-radius: 15px;
+    background: rgb(1, 1, 15);
 }
 .win{
     position: absolute;
-    left: 400px;
-    top: 250px;
-    font-size: 120px;
+    left: 190px;
+    top: 200px;
+    font-size: 200px;
     color: goldenrod;
     opacity: 0;
-    transition: 4s;
-    background: black;
+    transition: 2s;
+    animation: animate_win 1s infinite alternate;
 }
+
 .gameOver{
     position: absolute;
-    left: 400px;
-    top: 250px;
-    font-size: 120px;
-    color: blue;
+    left: 150px;
+    top: 200px;
+    font-size: 200px;
+    color: rgb(1, 1, 19);
     opacity: 0;
-    transition: 4s;
-    background: black;
+    transition: 2s;
+    /* background: black; */
     animation: animate 1s infinite alternate;
+    z-index: 4;
 }
 @keyframes animate{
     from{
@@ -135,13 +155,21 @@ body{
         text-shadow:0 0 10px aqua;
     }
 }
+@keyframes animate_win{
+    from{
+        text-shadow:0 0 0 white;
+    }
+    to{
+        text-shadow:0 0 10px rgb(166, 255, 0);
+    }
+}
 .scoreBoard{
     display: none;
     position: absolute;
     height: 100%;
     width: 100%;
     background: rgba(0, 0, 0,0.95);
-    z-index: 6;
+    z-index: 8;
 }
 .score{
     position: absolute;
@@ -155,10 +183,20 @@ body{
     color: white;
     background: rgba(0, 0, 255, 0.1);
 }
-.timer{
+.time{
     position: absolute;
     top: 100px;
     left: 900px;
+}
+.timer{
+    position: absolute;
+    top: 100px;
+    left: 990px;
+}
+.title{
+    position: absolute;
+    top: 30px;
+    left: 990px;
 }
 .help{
     position: absolute;

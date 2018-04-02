@@ -110,6 +110,9 @@ $(document).ready(function () {
             if (getBulletPosition('top') >= `${playerPosition.top}px` && getBulletPosition('top') <= `${playerPosition.top + 50}px` && getBulletPosition('left') >= `${playerPosition.left}px` && getBulletPosition('left') <= `${playerPosition.left + 50}px`) {
               this.bullet.remove();
               $('.player').addClass('explosion');
+              clearInterval(this.moving_top_down);
+              clearInterval(this.moving_right_left);
+              clearInterval(this.executing);
               setTimeout(() => {
                 $('.player').remove();
               }, 2000);
@@ -161,8 +164,6 @@ $(document).ready(function () {
     let firstShip = new ai_ship(300, 2);
     firstShip.createShip();
     firstShip.executeInstructions();
-    ship1 = firstShip.executing;
-    
     
     let winOrLoss = setInterval(() => {
       if (firstShip.is_ship_destroyed) {
@@ -190,7 +191,7 @@ $(document).ready(function () {
           bullet.addClass('player-bullet');
           $('.game-screen').append(bullet);
           bullet.css('left', `${playerPosition.left + 19}px`);
-          bullet.css('top', `${playerPosition.top - 20}px`);
+          bullet.css('top', `${playerPosition.top - 10}px`);
           let bulletTopPosition = playerPosition.top - 20;
           let bulletLeftPosition = playerPosition.left + 10;
           let bulletMovement = setInterval(() => {
@@ -214,19 +215,23 @@ $(document).ready(function () {
 
   function win() {
     clearInterval(timer);
-    clearInterval(ship1);
-    $('.win').css('opacity', '1');
     setTimeout(() => {
-      $('.win').css('opacity', '0');
-    }, 4000);
+      $('.win').css('opacity', '1');
+      $('.title, .time, .timer, .game-screen, .help, .start_button').css('opacity', '.05');
+      setTimeout(() => {
+        $('.win').css('opacity', '0');
+      }, 4000);
+    }, 1000);
   }
   function game_over() {
     clearInterval(timer);
-    clearInterval(ship1);
-    $('.gameOver').css('opacity', '1');
     setTimeout(() => {
-      $('.gameOver').css('opacity', '0');
-    }, 4000);
+      $('.gameOver').css('opacity', '1');
+      $('.title, .time, .timer, .game-screen, .help, .start_button').css('opacity', '.05');
+      setTimeout(() => {
+        $('.gameOver').css('opacity', '0');
+      }, 4000);
+    }, 1000);
   }
   function score_board() {
     let score = $('.score h1');
@@ -235,6 +240,7 @@ $(document).ready(function () {
     score.eq(2).text(`${score.eq(2).text()}  ${time}`);
     setTimeout(() => {
       $('.scoreBoard').css('display', 'block');
+      $('.title, .time, .timer, .game-screen, .help, .start_button').css('opacity', '.6');
     }, 6500);
   }
 
