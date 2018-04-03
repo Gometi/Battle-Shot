@@ -104,7 +104,7 @@ $(document).ready(function () {
       shoot() {
         setTimeout(() => {
           this.bullet.css('top', `${playerPosition.top}px`)
-          this.bullet.css('left', `${playerPosition.left}px`)
+          this.bullet.css('left', `${playerPosition.left + 10}px`)
           setTimeout(() => {
             if (getBulletPosition('top') >= `${playerPosition.top}px` && getBulletPosition('top') <= `${playerPosition.top + 50}px` && getBulletPosition('left') >= `${playerPosition.left}px` && getBulletPosition('left') <= `${playerPosition.left + 50}px`) {    //if the position of the bullet and the player ship are equal
               this.bullet.remove();
