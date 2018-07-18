@@ -1,16 +1,190 @@
 $(document).ready(function () {
   let playerName = $('.playerName');     //store player name
-  let number_of_ships_destroyed = 0;
-  let seconds = 0;
-  let minutes = 0;
+  let number_of_ships_destroyed;
+  let seconds;
+  let minutes;
   let time;
   let timer;
+  let playerPosition = $('.player').offset();        //store the player's ship position
+  let player_ship_destroyed;
+  let aiBullet;
 
   $('.begin').click(() => {
     if (!playerName.val()) alert('Enter Your Name to Begin!')  //if text field for the player name is empty call alert function
     else $('.welcomePage').css('display', 'none');            //hide the welcome page
   })
-  $('.start_button').click(() => {                          //click function to start the game
+
+  $('.start_button').click(() => {   //click function to start the game
+     number_of_ships_destroyed = 0;
+     seconds = 0;
+     minutes = 0;   
+     aiBullet = $('<div></div>');       //create a div for the bullet
+    aiBullet.addClass('bullet');    
+    $('.start_button').hide();     
+    playGame();
+  })
+
+  $('.restart_button').click(() => {     //click function to restart the game
+    clearInterval(timer);
+    player_ship_destroyed = false;
+    number_of_ships_destroyed = 0;
+    seconds = 0;
+    minutes = 0;
+    aiBullet = $('<div></div>');       //create a div for the bullet
+    aiBullet.addClass('bullet'); 
+    if($('.player')){
+      $('.player').remove();
+    }
+    if ($('.ai')) {
+      $('.ai').remove();
+    }
+   
+    let player = $('<div></div>'); 
+    player.addClass('player');
+    $('.game-screen').append(player);
+    playerPosition = $('.player').offset();
+    playerPosition.left = 369;
+    $('.title, .time, .timer, .game-screen, .help, .start_button').css('opacity', '1');
+    $('.scoreBoard').hide();  
+    //                   let score = $('.score h1');
+    // score.eq(0).text(`  ${playerName.val()}`);
+    // score.eq(1).text(`  ${number_of_ships_destroyed}`);
+    // score.eq(2).text(`  ${time}`);
+    playGame();
+  })
+
+  class ai_ship {                           //class definition for the ai ship
+    constructor(leftPosition, topPosition) {
+      this.leftPosition = leftPosition;
+      this.topPosition = topPosition;
+      let aiShip = $("<div></div>");       //create a div for the ai ship
+
+      aiShip.addClass('ai');
+      this.aiShip = aiShip;
+      
+      this.bullet = aiBullet;
+      this.damage_ship_can_take = 4;
+      this.is_ship_destroyed = false;
+      this.executing;
+      this.moving_top_down;
+      this.moving_right_left;
+    }
+    getTopPosition() {
+      return this.topPosition;
+    }
+    getLeftPosition() {
+      return this.leftPosition;
+    }
+    createShip() {
+      $('.game-screen').append(this.aiShip);        //add the ai ship to the div with the class 'game-screen'
+      setAiPosition('left', `${this.leftPosition}px`);
+      setAiPosition('top', `${this.topPosition}px`);
+    }
+    createAmmo() {
+      $('.game-screen').append(this.bullet);         //add the bullet to the div with the class 'game-screen'
+      setBulletPosition('bullet', 'left', `${this.leftPosition + 20}px`);
+      setBulletPosition('bullet', 'top', `${this.topPosition + 50}px`)
+    }
+    move() {
+      let moving_right = true;
+      let moving_down = true;
+      this.moving_top_down = setInterval(() => {     //setInterval that makes the ai ship move up and down
+        if (moving_down) {
+          setAiPosition('top', `${this.topPosition++}px`);   //increases the value of the top position every iteration
+          if (this.topPosition === 200) moving_down = false;
+        }
+        else {
+          setAiPosition('top', `${this.topPosition--}px`);   //decreases the value of the top position every iteration
+          if (this.topPosition === 0) moving_down = true;
+        }
+
+      }, 50);
+      this.moving_right_left = setInterval(() => {         //setInterval that makes the ai ship move left and right
+        if (moving_right) {
+          setAiPosition('left', `${this.leftPosition++}px`);  //increases the value of the left position every iteration
+          if (this.leftPosition === 750) moving_right = false;
+        }
+        else {
+          setAiPosition('left', `${this.leftPosition--}px`);    //decreases the value of the left position every iteration
+          if (this.leftPosition === 0) moving_right = true;
+        }
+
+      }, 5);
+
+    }
+    shoot() {
+      setTimeout(() => {
+        this.bullet.css('top', `${playerPosition.top}px`)
+        this.bullet.css('left', `${playerPosition.left + 10}px`)
+        setTimeout(() => {
+          if (getBulletPosition('top') >= `${playerPosition.top}px` && getBulletPosition('top') <= `${playerPosition.top + 50}px` && getBulletPosition('left') >= `${playerPosition.left}px` && getBulletPosition('left') <= `${playerPosition.left + 50}px`) {    //if the position of the bullet and the player ship are equal
+            this.bullet.remove();
+            $('.player').addClass('explosion');     //the explosion class has a gif with an explosion animation
+            clearInterval(this.moving_top_down);    //stop the ai ship from moving
+            clearInterval(this.moving_right_left);
+            clearInterval(this.executing);          //stops the ship from creating ammo and shootiong
+            setTimeout(() => {
+              $('.player').remove();                //remove the div containing the player's ship
+            }, 2000);
+
+            player_ship_destroyed = true;
+          }
+
+          else {
+            this.bullet.remove();
+          }
+        }, 2050);
+      }, 20);
+    }
+    executeInstructions() {              //function that calls the function for creating ammo and shooting every 2500 milliseconds
+      this.executing = setInterval(() => {
+        this.createAmmo();
+        this.shoot();
+      }, 2500);
+      this.move();
+    }
+
+    destroyShip() {
+      this.damage_ship_can_take--;        //reduce the damage the ai ship can take
+      if (!this.is_ship_destroyed) {        //if the ai ship is not destroyed when it is hit
+        this.aiShip.addClass('damage');   //add damage notification to the ai ship when it is hit
+        setTimeout(() => {
+          this.aiShip.removeClass('damage');
+        }, 100);
+      }
+
+      if (this.damage_ship_can_take === 0) {
+        this.aiShip.removeClass('ai');
+        this.aiShip.addClass('ai_explosion');    //add an exploding animation to the ai ship
+        clearInterval(this.moving_top_down);     //stop the ai ship's movement
+        clearInterval(this.moving_right_left);
+        clearInterval(this.executing);            //stop the ai ship from creating bullets and shooting
+        this.bullet.remove();
+        setTimeout(() => {
+          this.aiShip.remove();
+        }, 2000);
+
+        this.is_ship_destroyed = true;
+        number_of_ships_destroyed++;
+      }
+    }
+
+  }
+
+  let getAiPosition = (position) => {               //function for getting the ai's ship's position
+    return $('.ai').offset();
+  }
+  let getBulletPosition = (position) => {          //function for getting the bullet's position
+    return $('.bullet').css(position);
+  }
+  let setBulletPosition = (className, position, positionValue) => {
+    $(`.${className}`).css(position, positionValue);
+  }
+  let setAiPosition = (position, positionValue) => {     //function for positioning the ai's  ship
+    $('.ai').css(position, positionValue);
+  }
+
+  function playGame(){
     timer = setInterval(() => {                            //a setInterval function to calulate the time
       seconds++;
       if (seconds > 59) {
@@ -24,141 +198,11 @@ $(document).ready(function () {
       $('.timer').text(time);                           //display the time
     }, 1000);
 
-    let playerPosition = $('.player').offset();        //store the player's ship position
-    let player_ship_destroyed = false;
 
 
-    let getAiPosition = (position) => {               //function for getting the ai's ship's position
-      return $('.ai').offset();
-    }
-    let getBulletPosition = (position) => {          //function for getting the bullet's position
-      return $('.bullet').css(position);
-    }
-    let setBulletPosition = (className, position, positionValue) => {
-      $(`.${className}`).css(position, positionValue);
-    }
-    let setAiPosition = (position, positionValue) => {     //function for positioning the ai's  ship
-      $('.ai').css(position, positionValue);
-    }
+    
 
-    class ai_ship {                           //class definition for the ai ship
-      constructor(leftPosition, topPosition) {
-        this.leftPosition = leftPosition;
-        this.topPosition = topPosition;
-        let aiShip = $("<div></div>");       //create a div for the ai ship
-
-        aiShip.addClass('ai');
-        this.aiShip = aiShip;
-        let bullet = $('<div></div>');       //create a div for the bullet
-        bullet.addClass('bullet');
-        this.bullet = bullet;
-        this.damage_ship_can_take = 4;
-        this.is_ship_destroyed = false;
-        this.executing;
-        this.moving_top_down;
-        this.moving_right_left;
-      }
-      getTopPosition() {
-        return this.topPosition;
-      }
-      getLeftPosition() {
-        return this.leftPosition;
-      }
-      createShip() {
-        $('.game-screen').append(this.aiShip);        //add the ai ship to the div with the class 'game-screen'
-        setAiPosition('left', `${this.leftPosition}px`);
-        setAiPosition('top', `${this.topPosition}px`);
-      }
-      createAmmo() {
-        $('.game-screen').append(this.bullet);         //add the bullet to the div with the class 'game-screen'
-        setBulletPosition('bullet', 'left', `${this.leftPosition + 20}px`);
-        setBulletPosition('bullet', 'top', `${this.topPosition + 50}px`)
-      }
-      move() {
-        let moving_right = true;
-        let moving_down = true;
-        this.moving_top_down = setInterval(() => {     //setInterval that makes the ai ship move up and down
-          if (moving_down) {
-            setAiPosition('top', `${this.topPosition++}px`);   //increases the value of the top position every iteration
-            if (this.topPosition === 200) moving_down = false;
-          }
-          else {
-            setAiPosition('top', `${this.topPosition--}px`);   //decreases the value of the top position every iteration
-            if (this.topPosition === 0) moving_down = true;
-          }
-
-        }, 50);
-        this.moving_right_left = setInterval(() => {         //setInterval that makes the ai ship move left and right
-          if (moving_right) {
-            setAiPosition('left', `${this.leftPosition++}px`);  //increases the value of the left position every iteration
-            if (this.leftPosition === 750) moving_right = false;
-          }
-          else {
-            setAiPosition('left', `${this.leftPosition--}px`);    //decreases the value of the left position every iteration
-            if (this.leftPosition === 0) moving_right = true;
-          }
-
-        }, 5);
-
-      }
-      shoot() {
-        setTimeout(() => {
-          this.bullet.css('top', `${playerPosition.top}px`)
-          this.bullet.css('left', `${playerPosition.left + 10}px`)
-          setTimeout(() => {
-            if (getBulletPosition('top') >= `${playerPosition.top}px` && getBulletPosition('top') <= `${playerPosition.top + 50}px` && getBulletPosition('left') >= `${playerPosition.left}px` && getBulletPosition('left') <= `${playerPosition.left + 50}px`) {    //if the position of the bullet and the player ship are equal
-              this.bullet.remove();
-              $('.player').addClass('explosion');     //the explosion class has a gif with an explosion animation
-              clearInterval(this.moving_top_down);    //stop the ai ship from moving
-              clearInterval(this.moving_right_left);
-              clearInterval(this.executing);          //stops the ship from creating ammo and shootiong
-              setTimeout(() => {
-                $('.player').remove();                //remove the div containing the player's ship
-              }, 2000);
-
-              player_ship_destroyed = true;
-            }
-
-            else {
-              this.bullet.remove();
-            }
-          }, 2050);
-        }, 20);
-      }
-      executeInstructions() {              //function that calls the function for creating ammo and shooting every 2500 milliseconds
-        this.executing = setInterval(() => {
-          this.createAmmo();
-          this.shoot();
-        }, 2500);
-        this.move();
-      }
-
-      destroyShip() {
-        this.damage_ship_can_take--;        //reduce the damage the ai ship can take
-        if (!this.is_ship_destroyed) {        //if the ai ship is not destroyed when it is hit
-          this.aiShip.addClass('damage');   //add damage notification to the ai ship when it is hit
-          setTimeout(() => {
-            this.aiShip.removeClass('damage');
-          }, 100);
-        }
-
-        if (this.damage_ship_can_take === 0) {
-          this.aiShip.removeClass('ai');
-          this.aiShip.addClass('ai_explosion');    //add an exploding animation to the ai ship
-          clearInterval(this.moving_top_down);     //stop the ai ship's movement
-          clearInterval(this.moving_right_left);
-          clearInterval(this.executing);            //stop the ai ship from creating bullets and shooting
-          setTimeout(() => {
-            this.aiShip.remove();
-            this.bullet.remove();
-          }, 2000);
-
-          this.is_ship_destroyed = true;
-          number_of_ships_destroyed++;
-        }
-      }
-
-    }
+   
     let firstShip = new ai_ship(300, 2);
     firstShip.createShip();
     firstShip.executeInstructions();
@@ -180,6 +224,7 @@ $(document).ready(function () {
       if (!player_ship_destroyed) {            //if player's ship is not destroyed
         if (event.key === 'ArrowRight') {
           if (playerPosition.left < 730) $('.player').css('left', `${playerPosition.left += 20}px`)  //move the player's ship to the right
+          console.log(playerPosition.left)
         }
         if (event.key === 'ArrowLeft') {
           if (playerPosition.left > 20) $('.player').css('left', `${playerPosition.left -= 20}px`)   //move the player's ship to the left
@@ -209,7 +254,7 @@ $(document).ready(function () {
         }
       }
     })
-  })
+  }
 
   function win() {
     clearInterval(timer);   //stop the timer
@@ -233,9 +278,9 @@ $(document).ready(function () {
   }
   function score_board() {
     let score = $('.score h1');
-    score.eq(0).text(`${score.eq(0).text()}  ${playerName.val()}`);
-    score.eq(1).text(`${score.eq(1).text()}  ${number_of_ships_destroyed}`);
-    score.eq(2).text(`${score.eq(2).text()}  ${time}`);
+    score.eq(0).text(`Name:  ${playerName.val()}`);
+    score.eq(1).text(`Number Of Ships Destroyed:  ${number_of_ships_destroyed}`);
+    score.eq(2).text(`Time:  ${time}`);
     setTimeout(() => {
       $('.scoreBoard').css('display', 'block'); //display score board
       $('.title, .time, .timer, .game-screen, .help, .start_button').css('opacity', '.6');
